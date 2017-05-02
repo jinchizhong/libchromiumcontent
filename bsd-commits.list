@@ -1,0 +1,8 @@
+# Please update this file, when new chromium released.
+# commits from https://github.com/gliaskos/freebsd-chromium/commits/master
+
+56.0.2924.87 = 83628340c26e809bd2db13f8f7fa01d80c656e1c
+57.0.2987.98 = ddb528f5f3da0fb9c5a57158016234b0fbb23442
+57.0.2987.110 = c23d3a57bc9c2798572e1e107754fcfd531bb44b
+57.0.2987.133 = ebd3a58ed95ee304eb9d7d489d88ebca4da3a46e
+58.0.3029.81 = cc66f00cc239660abecd6f88dd8172dbf872dd8f

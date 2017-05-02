@@ -28,6 +28,12 @@ def main():
   if sys.platform in ['win32', 'cygwin']:
     env['DEPOT_TOOLS_WIN_TOOLCHAIN'] = '0'
 
+  if is_bsd():
+    # bsd put system include in /usr/local/include not /usr/include
+    # and, bsd do not put them to default include. so set vars
+    env['C_INCLUDE_PATH'] = '/usr/local/include'
+    env['CPLUS_INCLUDE_PATH'] = '/usr/local/include'
+
   os.chdir(SOURCE_ROOT)
 
   for component in COMPONENTS:
@@ -47,6 +53,17 @@ def parse_args():
   parser.add_argument('-R', '--no_shared_library', action='store_true',
                       help='Do not build shared library version')
   return parser.parse_args()
+
+
+def is_bsd():
+  # @_@, T_T
+  if sys.platform.startswith('freebsd'):
+    return True
+  elif sys.platform.startswith('openbsd'):
+    return True
+  elif sys.platform.startswith('netbsd'):
+    return True
+  return False
 
 
 if __name__ == '__main__':

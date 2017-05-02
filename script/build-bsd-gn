@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# this script should run after electron's patch system
+# because python-patch is stupid...
+
+set -e
+
+SCRIPT_DIR=$(readlink -f $(dirname $0))
+ROOT_DIR=$(dirname $SCRIPT_DIR)
+SRC_DIR=$ROOT_DIR/src
+PATCH_DIR=$ROOT_DIR/tmp/bsd-patch
+CHROMIUM_VERSION=$(cat "$ROOT_DIR/VERSION")
+
+if [ ! -d $PATCH_DIR ]; then
+    echo "patch directory is not exists. please run apply-bsd-patches first"
+    exit 1
+fi
+
+cd $PATCH_DIR/freebsd-chromium/www/chromium/
+
+make configure
+cp "work/chromium-$CHROMIUM_VERSION/out/Release/gn" $PATCH_DIR

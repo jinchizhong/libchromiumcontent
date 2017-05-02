@@ -371,8 +371,10 @@ config("build_time_executable") {
   # libraries in the executable's directory, so ICU cannot be found. So let's
   # make sure rpath is set here.
   # See '//build/config/gcc/BUILD.gn' for details on the rpath setting.
-  if (is_electron_build && is_linux && !is_component_build) {
-    configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
+  if (is_linux || is_bsd) {
+    if (is_electron_build && !is_component_build) {
+      configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
+    }
   }
 }
 

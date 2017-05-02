@@ -7,3 +7,5 @@
 /libchromiumcontent-static.zip
 .gclient
 .gclient_entries
+
+/tmp/
