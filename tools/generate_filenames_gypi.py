@@ -5,21 +5,25 @@ import os
 import sys
 
 
-TARGET_PLATFORM = {
-  'cygwin': 'win32',
-  'darwin': 'darwin',
-  'linux2': 'linux',
-  'win32': 'win32',
-}[sys.platform]
+if sys.platform == 'cygwin' or sys.platform == 'win32':
+  TARGET_PLATFORM = 'win32'
+elif sys.platform == 'darwin':
+  TARGET_PLATFORM = 'darwin'
+elif sys.platform == 'linux2':
+  TARGET_PLATFORM = 'linux'
+elif 'bsd' in sys.platform:
+  TARGET_PLATFORM = 'bsd'
 
 SHARED_LIBRARY_SUFFIX = {
   'darwin': 'dylib',
   'linux': 'so',
+  'bsd': 'so',
   'win32': 'dll',
 }[TARGET_PLATFORM]
 STATIC_LIBRARY_SUFFIX = {
   'darwin': 'a',
   'linux': 'a',
+  'bsd': 'a',
   'win32': 'lib',
 }[TARGET_PLATFORM]
 
@@ -28,6 +32,10 @@ EXCLUDE_SHARED_LIBRARIES = {
     'libwidevinecdm.dylib',
   ],
   'linux': [
+    'libwidevinecdm.so',
+    'libwidevinecdmadapter.so',
+  ],
+  'bsd': [
     'libwidevinecdm.so',
     'libwidevinecdmadapter.so',
   ],
@@ -46,6 +54,14 @@ EXCLUDE_STATIC_LIBRARIES = {
     'libv8_nosnapshot.a',
   ],
   'linux': [
+    'libffmpeg_yasm.a',
+    'libppapi_cpp.a',
+    'libprotobuf_full_do_not_use.a',
+    'libgenperf_libs.a',
+    'libv8_nosnapshot.a',
+    'libtranslator_static.a',
+  ],
+  'bsd': [
     'libffmpeg_yasm.a',
     'libppapi_cpp.a',
     'libprotobuf_full_do_not_use.a',

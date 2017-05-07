@@ -14,12 +14,14 @@ import zipfile
 
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
-PLATFORM_KEY = {
-  'cygwin': 'win',
-  'darwin': 'osx',
-  'linux2': 'linux',
-  'win32': 'win',
-}[sys.platform]
+if sys.platform == 'cygwin' or sys.platform == 'win32':
+  PLATFORM_KEY = 'win'
+elif sys.platform == 'darwin':
+  PLATFORM_KEY = 'osx'
+elif sys.platform == 'linux2':
+  PLATFORM_KEY = 'linux'
+elif 'bsd' in sys.platform:
+  PLATFORM_KEY = 'bsd'
 
 SHARED_LIBRARY_FILENAME = 'libchromiumcontent.zip'
 STATIC_LIBRARY_FILENAME = 'libchromiumcontent-static.zip'
