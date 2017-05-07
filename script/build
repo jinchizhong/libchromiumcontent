@@ -16,6 +16,9 @@ COMPONENTS = ['static_library', 'shared_library', 'ffmpeg']
 NINJA = os.path.join(VENDOR_DIR, 'depot_tools', 'ninja')
 if sys.platform == 'win32':
   NINJA = '{0}.exe'.format(NINJA)
+elif 'bsd' in sys.platform:
+  # google depot tools do not provide support of FreeBSD
+  NINJA = '/usr/local/bin/ninja'
 
 
 def main():
@@ -28,7 +31,7 @@ def main():
   if sys.platform in ['win32', 'cygwin']:
     env['DEPOT_TOOLS_WIN_TOOLCHAIN'] = '0'
 
-  if is_bsd():
+  if 'bsd' in sys.platform:
     # bsd put system include in /usr/local/include not /usr/include
     # and, bsd do not put them to default include. so set vars
     env['C_INCLUDE_PATH'] = '/usr/local/include'
@@ -53,17 +56,6 @@ def parse_args():
   parser.add_argument('-R', '--no_shared_library', action='store_true',
                       help='Do not build shared library version')
   return parser.parse_args()
-
-
-def is_bsd():
-  # @_@, T_T
-  if sys.platform.startswith('freebsd'):
-    return True
-  elif sys.platform.startswith('openbsd'):
-    return True
-  elif sys.platform.startswith('netbsd'):
-    return True
-  return False
 
 
 if __name__ == '__main__':

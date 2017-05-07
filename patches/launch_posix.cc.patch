@@ -1,0 +1,15 @@
+--- a/base/process/launch_posix.cc	2017-05-06 11:42:18.584590000 +0000
++++ b/base/process/launch_posix.cc	2017-05-06 11:44:03.686046000 +0000
+@@ -62,8 +62,12 @@
+ #include <sys/event.h>
+ 
+ #include "base/feature_list.h"
++#elif defined(OS_FREEBSD) && defined(COMPONENT_BUILD)
++// work around freebsd so link requirement
++__attribute__((weak)) char ** environ;
+ #else
+ extern char** environ;
++#pragma weak environ
+ #endif
+ 
+ namespace base {

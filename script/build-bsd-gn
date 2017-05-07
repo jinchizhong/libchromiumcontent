@@ -18,5 +18,5 @@ fi
 
 cd $PATCH_DIR/freebsd-chromium/www/chromium/
 
-make configure
+make configure BATCH=1
 cp "work/chromium-$CHROMIUM_VERSION/out/Release/gn" $PATCH_DIR

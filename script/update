@@ -25,6 +25,9 @@ DEPOT_TOOLS = os.path.join(VENDOR_DIR, 'depot_tools')
 NINJA = os.path.join(DEPOT_TOOLS, 'ninja')
 if sys.platform == 'win32':
   NINJA = '{0}.exe'.format(NINJA)
+elif 'bsd' in sys.platform:
+  # google depot tools do not provide support of *BSD
+  NINJA = '/usr/local/bin/ninja'
 
 TARBALL_REPO = 'zcbenz/chromium-source-tarball'
 TARBALL_URL = 'https://github.com/{0}/releases/download/{1}/chromium-{1}.tar.xz'
@@ -160,7 +163,7 @@ def copy_chromiumcontent_files():
 def apply_patches():
   ret = subprocess.call([sys.executable,
                           os.path.join(SOURCE_ROOT, 'script', 'apply-patches')])
-  if ret == 0 and is_bsd():
+  if ret == 0 and 'bsd' in sys.platform:
     ret = subprocess.call([os.path.join(SOURCE_ROOT, 'script', 'apply-bsd-patches')])
 
   return ret
@@ -175,7 +178,7 @@ def update_clang():
 
 def update_gn():
   # bsd do not have pre-compiled gn, so need build it
-  if is_bsd():
+  if 'bsd' in sys.platform:
     return subprocess.call([os.path.join(SOURCE_ROOT, 'script', 'build-bsd-gn')])
 
   os.chdir(SRC_DIR)
@@ -203,7 +206,7 @@ def run_gn(target_arch, defines):
     gn = os.path.join(SRC_DIR, 'buildtools', 'linux64', 'gn')
   elif sys.platform == 'darwin':
     gn = os.path.join(SRC_DIR, 'buildtools', 'mac', 'gn')
-  elif is_bsd():
+  elif 'bsd' in sys.platform:
     gn = os.path.join(SOURCE_ROOT, 'tmp', 'bsd-patch', 'gn')
 
   env = os.environ.copy()
@@ -217,7 +220,7 @@ def run_gn(target_arch, defines):
 
   for component in COMPONENTS:
     args = 'import("//chromiumcontent/args/{0}.gn") target_cpu="{1}"'.format(component, target_cpu)
-    if is_bsd():
+    if 'bsd' in sys.platform:
       args += " use_sysroot=false clang_use_chrome_plugins=false use_allocator=\"none\""
       args += " treat_warnings_as_errors=false use_pulseaudio=false use_system_libjpeg=true"
     output_dir = get_output_dir(SOURCE_ROOT, target_arch, component)
@@ -261,17 +264,6 @@ def mkdir_p(path):
   except OSError as e:
     if e.errno != errno.EEXIST:
       raise
-
-
-def is_bsd():
-  # @_@, T_T
-  if sys.platform.startswith('freebsd'):
-    return True
-  elif sys.platform.startswith('openbsd'):
-    return True
-  elif sys.platform.startswith('netbsd'):
-    return True
-  return False
 
 
 if __name__ == '__main__':

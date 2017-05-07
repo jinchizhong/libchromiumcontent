@@ -55,14 +55,17 @@ fi
 
 # make a fake ports environment, to reuse freebsd-chromium patch logic
 # it's really too complex, rewrite it is not a good idea.
-mkdir -p freebsd-chromium/www/chromium/work
-cd freebsd-chromium/www/chromium/work
-ln -s "$SRC_DIR" "chromium-$CHROMIUM_VERSION"
-touch .extract_done.chromium._usr_local
+cd freebsd-chromium/www/chromium
+mkdir -p work
+ln -s "$SRC_DIR" "work/chromium-$CHROMIUM_VERSION"
+touch work/.extract_done.chromium._usr_local
+
+# see patches/launch_posix.cc.patch
+rm -rf files/patch-base_process_launch__posix.cc
 
 
 # if already patched, do nothing
-if [ -f '.patch_done.chromium._usr_local' ]; then
+if [ -f 'work/.patch_done.chromium._usr_local' ]; then
     echo "already applied bsd patches, exit"
     echo "if you want to patch again, just remove work/.patch_done.chromium._usr_local"
     exit 0
@@ -81,9 +84,8 @@ find "$SRC_DIR" -name "*.orig-bsd" | while read line; do
 done
 
 
-cd .. # -> freebsd-chromium/www/chromium
 # patch it
-make patch
+make patch BATCH=1
 
 
 # post-patch

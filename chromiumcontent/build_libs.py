@@ -1,11 +1,23 @@
 import argparse
 import os
 import subprocess
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', dest='out')
 parser.add_argument('-s', dest='stamp')
 args = parser.parse_args()
+
+
+SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+VENDOR_DIR = os.path.join(SOURCE_ROOT, 'vendor')
+NINJA = os.path.join(VENDOR_DIR, 'depot_tools', 'ninja')
+if sys.platform == 'win32':
+  NINJA = '{0}.exe'.format(NINJA)
+elif 'bsd' in sys.platform:
+  # google depot tools do not provide support of FreeBSD
+  NINJA = '/usr/local/bin/ninja'
+
 
 def gen_list(out, name, obj_dirs):
     out.write(name + " = [\n")
@@ -267,6 +279,6 @@ with open(args.out, 'w') as out:
         ])
 
 os.environ['CHROMIUMCONTENT_2ND_PASS'] = '1'
-subprocess.check_call(['ninja', 'chromiumcontent:libs'])
+subprocess.check_call([NINJA, 'chromiumcontent:libs'])
 
 open(args.stamp, 'w')

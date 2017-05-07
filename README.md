@@ -43,3 +43,36 @@ $ ./chrome/installer/linux/sysroot_scripts/install-debian.wheezy.sysroot.py --ar
 $ cd -
 $ ./script/build -t arm
 ```
+
+### build on \*BSD
+
+I'm sorry, but I have already done my best. Cause of too complex cross dependencies, building libchromiumcontent on \*BSD is really complex.
+
+1. Install ports tree
+
+If you already have ports tree, you can skip this step.
+
+    # [ -d /usr/ports ] || ( portsnap fetch && portsnap extract )
+
+2. Install all dependencies of www/chromium or make www/chromium first
+
+    # cd /usr/ports/www/chromium
+    # make BATCH=1
+
+BTW: this may take a lot of time, you can run `pkg install chromium` first to save your life.
+
+3. Bootstrap source
+
+    $ cd path_of_this_project
+    $ ./script/bootstrap
+
+4. Configure
+
+    $ ./script/update
+
+5. Build
+
+    $ ./script/build
+
+If you are being asked type root password during update or build. This means you are missing some of dependencies.
+Please press ^C, and goto step 2.
